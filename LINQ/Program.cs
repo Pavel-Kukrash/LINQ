@@ -97,10 +97,10 @@ Console.WriteLine("_______________");
 
 var people3 = new List<Person1>
 {
-    new Person1 ("Tom", 23, "german"),
-    new Person1 ("Bob", 27, "english"),
-    new Person1 ("Anna", 29, "english"),
-    new Person1 ("Alice", 24, "spanish")
+    new Person1 ("Tom", 23, new List<string> {"german", "english" }),
+    new Person1 ("Bob", 27, new List<string> {"spanish", "german" }),
+    new Person1 ("Anna", 29, new List<string> {"english" }),
+    new Person1 ("Alice", 24, new List<string> {"german", "spanish" })
 };
 
 //var selectedPeople3 = from p in people3
@@ -108,8 +108,10 @@ var people3 = new List<Person1>
 //                      select p;
 
 var selectedPeople3 = people3.Where(p => p.Age1 > 23).OrderBy(p => p.Name1);
-                             
 
+int ageSum = people3.Sum(p => p.Age1);
+
+Console.WriteLine(ageSum);
 
 foreach (Person1 person in selectedPeople3)
     Console.WriteLine($"{person.Name1} - {person.Age1}");
@@ -127,7 +129,7 @@ Console.WriteLine("_______________");
 //                                         .Where(p => p.Lang == "english" && p.Person1.Age1 <28)
 //                                         .Select(p => p.Person1);
 
-var selectedPeople4 = people3.Where(p => p.Age1 > 25 && p.Languages
+var selectedPeople4 = people3.Where(p => p.Age1 > 23 && p.Languages
                                                      .Contains("english"))
                                                      .OrderBy(p => p.Name1);
 
@@ -144,12 +146,99 @@ foreach (int i in orderedNumbersArr)
     Console.WriteLine(i);
 }
 
+Console.WriteLine("_______________");
+
+// sort per length
+
+string[] people4 = new[] { "Kate", "Tom", "Sam", "Mike", "Alice" };
+var sortedPeople = people4.OrderBy(p => p, new CustomStringComparer());
+
+foreach (var p in sortedPeople)
+{
+    Console.WriteLine(p);
+}
+
+Console.WriteLine("_______________");
+
+// Except() 
+
+string[] soft = { "Microsoft", "Google", "Apple" };
+string[] hard = { "Apple", "IBM", "Samsung" };
+
+var result = soft.Except(hard);
+
+foreach(string s in result)
+    Console.WriteLine(s);
+
+Console.WriteLine("_______________");
+
+string[] soft2 = { "Microsoft", "Google", "Apple", "Microsoft", "Google" };
+var result2 = soft.Distinct();
+foreach(string s in result2)
+    Console.WriteLine(s);
+
+Console.WriteLine("_______________");
+
+var result3 = soft.Union(hard);
+foreach (string s in result3)
+    Console.WriteLine(s);
+
+Console.WriteLine("_______________");
+
+Person2[] students = { new Person2("Tom"), new Person2("Bob"), new Person2("Sam") };
+Person2[] employees = { new Person2("Tom"), new Person2("Bob"), new Person2("Mike") };
+
+// объединение последовательностей
+var people5 = students.Union(employees);
+
+foreach (Person2 person in people5)
+    Console.WriteLine(person.Name2);
+
+Console.WriteLine("_______________");
+
+int[] numbers2 = { 1, 2, 3, 4, 5 };
+int query = numbers2.Aggregate((x, y) => x - y); // 1-2-3-4-5
+int query2 = numbers2.Count(i => i % 2 == 0);
+Console.WriteLine(query);
+Console.WriteLine(query2);
+
+Console.WriteLine("_______________");
+
+
+
+
+
+
 
 
 
 Console.ReadKey();
 
 
+class Person2
+{
+    public string Name2 { get; }
+    public Person2(string name2) => Name2 = name2;
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is Person2 person) return Name2 == person.Name2;
+        return false;
+    }
+    public override int GetHashCode() => Name2.GetHashCode();
+}
+
+
+
+class CustomStringComparer : IComparer<String>
+{
+    public int Compare(string? x, string? y)
+    {
+        int xLength = x?.Length ?? 0; // если x равно null, то длина 0
+        int yLength = y?.Length ?? 0;
+        return xLength - yLength;
+    }
+}
 
 public class Person
 {
@@ -173,18 +262,18 @@ public class Hobby
 }
 
 public class Person1
-{
+{ 
     public string Name1 { get; set; }
     public int Age1 { get; set; }
-    public string Languages { get; set; }
+    public List<string> Languages { get; set; }
 
-    public Person1(string name1, int age1, string languages)
+    public Person1(string name1, int age1, List<string> languages)
     {
         Name1=name1;
         Age1=age1;
         Languages=languages;
     }
 
-
+    
 
 }
