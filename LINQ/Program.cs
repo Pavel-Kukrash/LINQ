@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Reflection;
 
 string[] people = { "Tom", "Bob", "Sam", "Tim", "Tomas", "Bill" };
 
@@ -111,7 +112,7 @@ var selectedPeople3 = people3.Where(p => p.Age1 > 23).OrderBy(p => p.Name1);
 
 int ageSum = people3.Sum(p => p.Age1);
 
-Console.WriteLine(ageSum);
+Console.WriteLine("Sum of Ages:" + ageSum);
 
 foreach (Person1 person in selectedPeople3)
     Console.WriteLine($"{person.Name1} - {person.Age1}");
@@ -152,10 +153,17 @@ Console.WriteLine("_______________");
 
 string[] people4 = new[] { "Kate", "Tom", "Sam", "Mike", "Alice" };
 var sortedPeople = people4.OrderBy(p => p, new CustomStringComparer());
+var skipedPeople = people4.SkipWhile(p => p.Length == 4);
+var take = people4.Take(4); // TakeLast | TakeWhile
 
 foreach (var p in sortedPeople)
 {
     Console.WriteLine(p);
+}
+
+foreach (var s in skipedPeople)
+{
+    Console.WriteLine(s);
 }
 
 Console.WriteLine("_______________");
@@ -188,7 +196,11 @@ Console.WriteLine("_______________");
 Person2[] students = { new Person2("Tom"), new Person2("Bob"), new Person2("Sam") };
 Person2[] employees = { new Person2("Tom"), new Person2("Bob"), new Person2("Mike") };
 
-// объединение последовательностей
+var tom = new Person2("Tom");
+bool hasTom = students.Contains(tom);
+Console.WriteLine(hasTom);
+
+
 var people5 = students.Union(employees);
 
 foreach (Person2 person in people5)
@@ -199,21 +211,52 @@ Console.WriteLine("_______________");
 int[] numbers2 = { 1, 2, 3, 4, 5 };
 int query = numbers2.Aggregate((x, y) => x - y); // 1-2-3-4-5
 int query2 = numbers2.Count(i => i % 2 == 0);
+var query3 = numbers2.Skip(2).Take(2); // SkipLast()
 Console.WriteLine(query);
 Console.WriteLine(query2);
+Console.WriteLine(query3);
 
 Console.WriteLine("_______________");
 
+Person3[] people6 =
+{
+    new Person3("Tom", "Microsoft"), new Person3("Sam", "Google"),
+    new Person3("Bob", "JetBrains"), new Person3("Mike", "Microsoft"),
+    new Person3("Kate", "JetBrains"), new Person3("Alice", "Microsoft"),
+};
 
+var companies = people6.GroupBy(p => p.Company);
 
+foreach (var company in companies)
+{
+    Console.WriteLine(company.Key);
 
+    foreach (var person in company)
+    {
+        Console.WriteLine(person.Name3);
+    }
+    Console.WriteLine(); 
+}
 
+var companies2 = people6.GroupBy(p => p.Company)
+                       .Select(g => new { Name = g.Key, Count = g.Count(), 
+                                          Employees = g.Select(p =>p)} );
+
+foreach (var company in companies2)
+{
+    Console.WriteLine($"{company.Name} : {company.Count} ");
+    foreach (var employee in company.Employees)
+    {
+        Console.WriteLine(employee.Name3);
+    }
+    Console.WriteLine();
+}
 
 
 
 
 Console.ReadKey();
-
+record class Person3(string Name3, string Company);
 
 class Person2
 {
